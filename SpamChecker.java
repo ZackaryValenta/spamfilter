@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 
 public class SpamChecker
@@ -88,7 +90,19 @@ public class SpamChecker
 				}
 			}
 		}
-		// TODO remove all words that only appear once
+		// remove any returnTree entry with a word that appears 0 or 1 times in either class of document (spam/ham)
+		ArrayList<String> removalKeys = new ArrayList<String>();
+		for (Entry<String, QuantifiedWord> currentWord : returnTree.entrySet())
+		{
+			if (currentWord.getValue().getHamFrequency() < 2 && currentWord.getValue().getSpamFrequency() < 2)
+			{
+				removalKeys.add(currentWord.getKey());
+			}
+		}
+		for (String currentKey : removalKeys)
+		{
+			returnTree.remove(currentKey);
+		}
 		return returnTree;
 	}
 	
