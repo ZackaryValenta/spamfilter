@@ -14,12 +14,10 @@ public class FilteredDocument
 		SPAM("Spam"), HAM("Ham");
 		
 		private String typeName;
-		
 		private DocumentType(String typeName)
 		{
 			this.typeName = typeName;
 		}
-		
 		public String toString()
 		{
 			return this.typeName;
@@ -66,6 +64,7 @@ public class FilteredDocument
 		return (this.getAbsolutePath().hashCode() * 31)
 				+ (this.getDocumentContents().hashCode() * 31);
 	}
+	
 	// returns a string containing the contents of a specified file
 	private String fileContentsToString(String absolutePath)
 	{
@@ -125,7 +124,6 @@ public class FilteredDocument
 	private static ArrayList<String> getFilteredWords(String documentContents)
 	{
 		ArrayList<String> returnSet = new ArrayList<String>();
-		
 		for (String currentWord : documentContents.split("\\s+"))
 		{
 			currentWord = trimEnds(currentWord);

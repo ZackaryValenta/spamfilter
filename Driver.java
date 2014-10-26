@@ -6,8 +6,8 @@ public class Driver
 {
 	public static void main(String[] args)
 	{
-		File hamFolder = new File("./dataset/ham/");
-		File spamFolder = new File("./dataset/spam/");
+		File hamFolder = new File("./dataset/ham");
+		File spamFolder = new File("./dataset/spam");
 		File[] hamFiles = hamFolder.listFiles();
 		File[] spamFiles = spamFolder.listFiles();
 		
@@ -23,5 +23,9 @@ public class Driver
 		{
 			System.out.println(s);
 		}
+		
+		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
+		
+		testChecker.exportDatasetWordsToTextFile("./dataset/datasetWords.txt");
 	}
 }
