@@ -1,22 +1,20 @@
 package spamfilter;
 
-import java.util.Comparator;
-
 public class QuantifiedWord
 {
 	private String word;
 	private int hamFrequency;
-	private double hamConditionalProbability;
+	private Double hamConditionalProbability;
 	private int spamFrequency;
-	private double spamConditionalProbability;
+	private Double spamConditionalProbability;
 	
-	public QuantifiedWord(String word, int hamFrequency, double hamConditionalProbability, int spamFrequency, double spamConditionalProbability)
+	public QuantifiedWord(String word)
 	{
 		this.word = word;
-		this.hamFrequency = hamFrequency;
-		this.hamConditionalProbability = hamConditionalProbability;
-		this.spamFrequency = spamFrequency;
-		this.spamConditionalProbability = spamConditionalProbability;
+		this.hamFrequency = 0;
+		this.hamConditionalProbability = null;
+		this.spamFrequency = 0;
+		this.spamConditionalProbability = null;
 	}
 
 	public String getWord()
@@ -29,7 +27,7 @@ public class QuantifiedWord
 		return hamFrequency;
 	}
 
-	public double getHamConditionalProbability()
+	public Double getHamConditionalProbability()
 	{
 		return hamConditionalProbability;
 	}
@@ -39,9 +37,19 @@ public class QuantifiedWord
 		return spamFrequency;
 	}
 
-	public double getSpamConditionalProbability()
+	public Double getSpamConditionalProbability()
 	{
 		return spamConditionalProbability;
+	}
+	
+	public void incrementHam()
+	{
+		++this.hamFrequency;
+	}
+	
+	public void incrementSpam()
+	{
+		++this.spamFrequency;
 	}
 	
 }
