@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
 public class FilteredDocument
 {
 	public enum DocumentType
@@ -70,18 +74,26 @@ public class FilteredDocument
 	{
 		String returnString = "";
 		List<String> fileLines = new ArrayList<String>();
+		
 		try
 		{
-			fileLines.addAll(Files.readAllLines(Paths.get(absolutePath), Charset.defaultCharset()));
+			FileInputStream in = new FileInputStream(absolutePath);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String currentLine;
+			while((currentLine = br.readLine())!= null)
+			{
+				fileLines.add(currentLine);
+			}
+			for (String line : fileLines)
+			{
+				returnString += line + "\n";
+			}
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		for (String currentLine : fileLines)
-		{
-			returnString += currentLine + "\n";
-		}
+		
 		return returnString;
 	}
 
