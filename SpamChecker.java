@@ -88,6 +88,7 @@ public class SpamChecker
 				}
 			}
 		}
+		// TODO remove all words that only appear once
 		return returnTree;
 	}
 	
