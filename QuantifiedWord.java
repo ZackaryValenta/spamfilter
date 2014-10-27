@@ -42,6 +42,16 @@ public class QuantifiedWord
 		return spamConditionalProbability;
 	}
 	
+	public void setHamConditionalProbability(Double hamConditionalProbability)
+	{
+		this.hamConditionalProbability = hamConditionalProbability;
+	}
+
+	public void setSpamConditionalProbability(Double spamConditionalProbability)
+	{
+		this.spamConditionalProbability = spamConditionalProbability;
+	}
+
 	public void incrementHam()
 	{
 		++this.hamFrequency;
