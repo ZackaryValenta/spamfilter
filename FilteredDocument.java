@@ -119,7 +119,6 @@ public class FilteredDocument
 				inQuotes = !inQuotes;
 			}
 		}
-
 		tags.add(documentContents.length());
 		for (int i = 0; i < tags.size(); i += 2)
 		{
