@@ -1,9 +1,6 @@
 package spamfilter;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,29 +69,28 @@ public class FilteredDocument
 	// returns a string containing the contents of a specified file
 	private String fileContentsToString(String absolutePath)
 	{
-		String returnString = "";
 		List<String> fileLines = new ArrayList<String>();
-		
+		StringBuffer returnStringBuffer = new StringBuffer();
 		try
 		{
-			FileInputStream in = new FileInputStream(absolutePath);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(absolutePath)));
 			String currentLine;
-			while((currentLine = br.readLine())!= null)
+			while((currentLine = bufferedReader.readLine())!= null)
 			{
 				fileLines.add(currentLine);
 			}
-			for (String line : fileLines)
-			{
-				returnString += line + "\n";
-			}
+			bufferedReader.close();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		
-		return returnString;
+		for (String currentLine : fileLines)
+		{
+			returnStringBuffer.append(currentLine);
+			returnStringBuffer.append("\n");
+		}
+		return returnStringBuffer.toString();
 	}
 
 	// returns the contents of the specified string with all XML tags removed
