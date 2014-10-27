@@ -20,7 +20,7 @@ public class Driver
 		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
 		System.out.println("Done\n");		
 		System.out.print("Exporting spam checker's vocabulary to \"dataset/datasetWords.txt\"...");
-		testChecker.exportDatasetWordsToTextFile("./dataset/datasetWords.txt");
+		testChecker.exportDatasetWordsToTextFile("./dataset/model.txt");
 		System.out.println("Done");		
 	}
 }
