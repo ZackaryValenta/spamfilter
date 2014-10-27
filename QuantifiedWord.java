@@ -7,7 +7,7 @@ public class QuantifiedWord
 	private Double hamConditionalProbability;
 	private int spamFrequency;
 	private Double spamConditionalProbability;
-	
+
 	public QuantifiedWord(String word)
 	{
 		this.word = word;
@@ -41,7 +41,7 @@ public class QuantifiedWord
 	{
 		return spamConditionalProbability;
 	}
-	
+
 	public void setHamConditionalProbability(Double hamConditionalProbability)
 	{
 		this.hamConditionalProbability = hamConditionalProbability;
@@ -56,7 +56,7 @@ public class QuantifiedWord
 	{
 		++this.hamFrequency;
 	}
-	
+
 	public void incrementSpam()
 	{
 		++this.spamFrequency;

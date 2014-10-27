@@ -64,7 +64,7 @@ public class SpamChecker
 	{
 		return spamProbability;
 	}
-	
+
 	// output all values of datasetWords to a specified text file sorted alphabetically
 	public void exportDatasetWordsToTextFile(String exportFilePath)
 	{
@@ -109,7 +109,7 @@ public class SpamChecker
 			e.printStackTrace();
 		}
 	}
-	
+
 	// preconditions:- hamDocuments and spamDocuments must be populated with the file information from
 	//                 the hamDatasetPath and spamDatasetPath folder files
 	private HashMap<String, QuantifiedWord> createWordSet()
@@ -184,19 +184,21 @@ public class SpamChecker
 		}
 		return returnSet;
 	}
-	
+
 	private void computeConditionalProbabilities()
 	{
 		for (Entry<String,QuantifiedWord> currentWordEntry : datasetWords.entrySet())
 		{
 			QuantifiedWord currentQuantifiedWord = currentWordEntry.getValue();
+			
 			// compute probability of current word given a ham document
 			Double probabilityGivenHam = ((double)(currentQuantifiedWord.getHamFrequency() + SMOOTHING_FACTOR)) / 
-											(hamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
+					(hamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
 			currentQuantifiedWord.setHamConditionalProbability(probabilityGivenHam);
+			
 			// compute probability of current word given a spam document
 			Double probabilityGivenSpam = ((double)(currentQuantifiedWord.getSpamFrequency() + SMOOTHING_FACTOR)) / 
-											(spamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
+					(spamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
 			currentQuantifiedWord.setSpamConditionalProbability(probabilityGivenSpam);
 		}
 	}

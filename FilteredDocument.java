@@ -13,7 +13,7 @@ public class FilteredDocument
 	public enum DocumentType
 	{
 		SPAM("Spam"), HAM("Ham");
-		
+
 		private String typeName;
 		private DocumentType(String typeName)
 		{
@@ -24,11 +24,11 @@ public class FilteredDocument
 			return this.typeName;
 		}
 	}
-	
+
 	private String absolutePath;
 	private String documentContents;
 	private ArrayList<String> filteredWords;
-	
+
 	public FilteredDocument(String absolutePath)
 	{
 		this.absolutePath     = absolutePath;
@@ -59,13 +59,13 @@ public class FilteredDocument
 		FilteredDocument other = (FilteredDocument) obj;
 		return this.getAbsolutePath() == other.getAbsolutePath();
 	}
-	
+
 	public int hashCode(FilteredDocument document)
 	{
 		return (this.getAbsolutePath().hashCode() * 31)
 				+ (this.getDocumentContents().hashCode() * 31);
 	}
-	
+
 	// returns a string containing the contents of a specified file
 	private String fileContentsToString(String absolutePath)
 	{
@@ -141,13 +141,13 @@ public class FilteredDocument
 		}
 		return returnSet;
 	}
-	
+
 	// checks if the specified word has desirable traits
 	private static boolean isDesirableWord(String word)
 	{
 		return hasWordCharactersOnly(word) && (word.length() > 3);
 	}
-	
+
 	// remove any non uppercase or lowercase letter characters from the end of the specified string
 	// return an empty string if no uppercase or lowercase letter characters were found
 	private static String trimEnds(String word)
@@ -171,7 +171,7 @@ public class FilteredDocument
 		}
 		return word.substring(i, j + 1);
 	}
-	
+
 	// checks if a specified character is an uppercase or lowercase letter
 	private static boolean isAlphabeticCharacter(char character)
 	{
