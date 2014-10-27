@@ -27,5 +27,6 @@ public class Driver
 		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
 		
 		testChecker.exportDatasetWordsToTextFile("./dataset/datasetWords.txt");
+		
 	}
 }
