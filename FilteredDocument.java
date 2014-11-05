@@ -75,7 +75,7 @@ public class FilteredDocument
 		{
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(absolutePath)));
 			String currentLine;
-			while((currentLine = bufferedReader.readLine())!= null)
+			while((currentLine = bufferedReader.readLine()) != null)
 			{
 				fileLines.add(currentLine);
 			}
@@ -158,17 +158,23 @@ public class FilteredDocument
 		{
 			++i;
 		}
-		// if there is no beginning of a word return an empty string
-		if (i == word.length())
-		{
-			return "";
-		}
 		// find the end of the word
 		int j = word.length()- 1;
 		while (j >= 0 && !isAlphabeticCharacter(word.charAt(j)))
 		{
 			--j;
 		}
+		// trim apostrophized "s" from the end
+		if (j > 1 && word.charAt(j - 1) == '\'' && (word.charAt(j) == 's' || word.charAt(j) == 'S'))
+		{
+			j -= 2;
+		}
+		// if the beginning found is after the end then return an empty string
+		if (i > j)
+		{
+			return "";
+		}
+		//System.out.println(word + " " + i + " " + j);
 		return word.substring(i, j + 1);
 	}
 	

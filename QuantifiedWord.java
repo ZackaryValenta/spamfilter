@@ -10,11 +10,16 @@ public class QuantifiedWord
 	
 	public QuantifiedWord(String word)
 	{
+		this(word, 0, null, 0, null);
+	}
+	
+	public QuantifiedWord(String word, int hamFrequency, Double hamConditionalProbability, int spamFrequency, Double spamConditionalProbability)
+	{
 		this.word = word;
-		this.hamFrequency = 0;
-		this.hamConditionalProbability = null;
-		this.spamFrequency = 0;
-		this.spamConditionalProbability = null;
+		this.hamFrequency = hamFrequency;
+		this.hamConditionalProbability = hamConditionalProbability;
+		this.spamFrequency = spamFrequency;
+		this.spamConditionalProbability = spamConditionalProbability;
 	}
 
 	public String getWord()
