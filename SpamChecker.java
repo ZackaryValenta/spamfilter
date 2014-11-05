@@ -134,9 +134,6 @@ public class SpamChecker
 			e.printStackTrace();
 		}
 	}
-<<<<<<< HEAD
-
-=======
 	
 	// creates a classified document using dataset information
 	public ClassifiedDocument classifyDocument(String documentPath)
@@ -157,7 +154,6 @@ public class SpamChecker
 		return returnSet;
 	}
 	
->>>>>>> master
 	// preconditions:- hamDocuments and spamDocuments must be populated with the file information from
 	//                 the hamDatasetPath and spamDatasetPath folder files
 	private HashMap<String, QuantifiedWord> createVocabulary()
@@ -229,20 +225,12 @@ public class SpamChecker
 			
 			// compute probability of current word given a ham document
 			Double probabilityGivenHam = ((double)(currentQuantifiedWord.getHamFrequency() + SMOOTHING_FACTOR)) / 
-<<<<<<< HEAD
-					(hamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
-=======
 											(hamWordCount + (vocabulary.size() * SMOOTHING_FACTOR));
->>>>>>> master
 			currentQuantifiedWord.setHamConditionalProbability(probabilityGivenHam);
 			
 			// compute probability of current word given a spam document
-			Double probabilityGivenSpam = ((double)(currentQuantifiedWord.getSpamFrequency() + SMOOTHING_FACTOR)) / 
-<<<<<<< HEAD
-					(spamWordCount + (datasetWords.size() * SMOOTHING_FACTOR));
-=======
+			Double probabilityGivenSpam = ((double)(currentQuantifiedWord.getSpamFrequency() + SMOOTHING_FACTOR)) /
 											(spamWordCount + (vocabulary.size() * SMOOTHING_FACTOR));
->>>>>>> master
 			currentQuantifiedWord.setSpamConditionalProbability(probabilityGivenSpam);
 		}
 	}

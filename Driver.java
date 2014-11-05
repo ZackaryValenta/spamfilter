@@ -19,15 +19,9 @@ public class Driver
 		// create a test SpamChecker object and export its model to "model.txt"
 		System.out.print("\nCreating SpamChecker using documents in \"dataset/ham\" and \"dataset/spam\" folders...");
 		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
-		System.out.println("Done\n");		
-<<<<<<< HEAD
-		System.out.print("Exporting spam checker's vocabulary to \"dataset/model.txt\"...");
-		testChecker.exportDatasetWordsToTextFile("./dataset/model.txt");
-		System.out.println("Done");		
-=======
+		System.out.println("Done\n");	
 		System.out.print("Exporting spam checker's vocabulary to \"dataset/datasetWords.txt\"...");
 		testChecker.exportModelToTextFile("./dataset/model.txt");
 		System.out.println("Done");
->>>>>>> master
 	}
 }
