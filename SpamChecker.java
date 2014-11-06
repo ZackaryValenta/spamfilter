@@ -40,7 +40,7 @@ public class SpamChecker
 		computeConditionalProbabilities();
 	}
 	
-	// constructor that takes the path to a text file of a SpamCehcker model and initializes the attributes
+	// constructor that takes the path to a text file of a SpamChecker model and initializes the attributes
 	public SpamChecker(String modelPath)
 	{
 		parseModel(modelPath);
@@ -277,4 +277,6 @@ public class SpamChecker
 			e.printStackTrace();
 		}
 	}
+	
+
 }
