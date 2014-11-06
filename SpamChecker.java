@@ -34,8 +34,8 @@ public class SpamChecker
 		this.spamDatasetPath = spamDatasetPath;
 		this.hamDocuments    = filterDocuments(hamDatasetPath);
 		this.spamDocuments   = filterDocuments(spamDatasetPath);
-		this.hamProbability  = hamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
-		this.spamProbability = spamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
+		this.hamProbability  = (double)hamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
+		this.spamProbability = (double)spamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
 		this.vocabulary      = this.createVocabulary();
 		computeConditionalProbabilities();
 	}

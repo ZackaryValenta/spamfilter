@@ -27,35 +27,30 @@ public class Driver
 		testChecker.exportModelToTextFile("./dataset/model.txt");
 		System.out.println("Done");
 		
-		File secondHamFolder = new File("./dataset/test_documents/Ham Test Documents");
-		File secondSpamFolder = new File("./dataset/test_documents/Spam Test Documents");
-		File[] secondHamFiles = secondHamFolder.listFiles();
-		File[] secondSpamFiles = secondSpamFolder.listFiles();
-		System.out.print("Files in second ham dataset: ");
-		System.out.print(secondHamFiles.length);
-		System.out.print("\nFiles in second spam dataset: ");
-		System.out.print(secondSpamFiles.length);
-		SpamChecker secondTestChecker = new SpamChecker("./dataset/test_documents/Ham Test Documents", "./dataset/test_documents/Spam Test Documents");
-		secondTestChecker.exportModelToTextFile("./dataset/secondModel.txt");
+		File testDocumentsFolder = new File("./test_documents");
+		File[] testDocuments = testDocumentsFolder.listFiles();
+		System.out.print("Files in test_documents folder: ");
+		System.out.print(testDocuments.length);
+		
 		try
 		{
-			File exportFile = new File("./dataset/result.txt");
+			File exportFile = new File("./test_documents/result.txt");
 			if (!exportFile.exists())
 			{
 				exportFile.createNewFile();
 			}
 			BufferedWriter exportFileBuffer = new BufferedWriter(new FileWriter(exportFile, false));
 			
-			for(int i = 0; i < secondHamFiles.length; i++)
+			for(int i = 0; i < testDocuments.length; i++)
 			{
 				
 				StringBuilder line = new StringBuilder();
 				line.append(i + 1);
 				line.append("   ");
-				line.append(secondHamFiles[i].getName());
+				line.append(testDocuments[i].getName());
 				line.append("   ");
-				ClassifiedDocument doc = secondTestChecker.classifyDocument(secondHamFiles[i].getName());
-				if (doc.getHamProbability() > doc.getSpamProbability())
+				ClassifiedDocument classifiedDocument = testChecker.classifyDocument(testDocuments[i].getAbsolutePath());
+				if (classifiedDocument.getHamProbability() > classifiedDocument.getSpamProbability())
 				{
 					line.append("ham");
 				}
@@ -63,18 +58,22 @@ public class Driver
 				{
 					line.append("spam");
 				}
-				line.append(doc.hamProbability);
-				line.append(doc.spamProbability);
+				line.append("   ");
+				line.append(classifiedDocument.getHamProbability());
+				line.append("   ");
+				line.append(classifiedDocument.getSpamProbability());
 				exportFileBuffer.write(line.toString());
-		}
+				if (i != (testDocuments.length - 1))
+				{
+					exportFileBuffer.newLine();
+				}
+				exportFileBuffer.flush();
+			}
 			exportFileBuffer.close();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 }

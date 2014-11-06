@@ -174,7 +174,6 @@ public class FilteredDocument
 		{
 			return "";
 		}
-		//System.out.println(word + " " + i + " " + j);
 		return word.substring(i, j + 1);
 	}
 
