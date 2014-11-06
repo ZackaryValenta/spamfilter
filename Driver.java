@@ -1,7 +1,9 @@
 package spamfilter;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -82,12 +84,13 @@ public class Driver
 		
 		try
 		{
-			Scanner scanner = new Scanner("./testdata/result.txt");
+			Scanner scanner = new Scanner(new BufferedReader(new FileReader("./testdata/result.txt")));
 			File exportFile = new File("./testdata/analysis.txt");
 			if (!exportFile.exists())
 			{
 				exportFile.createNewFile();
 			}
+			BufferedWriter exportFileBuffer = new BufferedWriter(new FileWriter(exportFile, false));
 			for (int i = 0; i < testDocuments.length; i++)
 			{
 				StringBuilder line = new StringBuilder();
@@ -95,19 +98,60 @@ public class Driver
 				line.append("   ");
 				line.append(testDocuments[i].getName());
 				line.append("   ");
-				if (scanner.nextLine().contains("HAM"))
+				String str = scanner.nextLine();
+				//if the filename starts with HAM
+				if (str.contains("HAM"))
 				{
-					line.append("ham");
+					//if string contains ham and therefore we classified it correctly as ham
+					if (str.contains("ham"))
+					{
+						line.append("ham");
+						line.append("   ");
+						line.append("ham");
+						line.append("   ");
+						line.append("correct");
+					}
+					//if string contains spam and therefore we classified it incorrectly as spam
+					else
+					{
+						line.append("spam");
+						line.append("   ");
+						line.append("ham");
+						line.append("   ");
+						line.append("incorrect");
+					}
 				}
-				else
+				//if the filename starts with SPAM
+				else if (str.contains("SPAM"))
 				{
-					line.append("spam");
+					//if string contains spam and therefore we classified it correctly as spam
+					if (str.contains("spam"))
+					{
+						line.append("spam");
+						line.append("   ");
+						line.append("spam");
+						line.append("   ");
+						line.append("correct");
+					}
+					//if string contains ham and therefore we classified it correctly as ham
+					else
+					{
+						line.append("ham");
+						line.append("   ");
+						line.append("spam");
+						line.append("   ");
+						line.append("incorrect");
+					}
 				}
-				line.append("   ");
-				ClassifiedDocument classifiedDocument = testChecker.classifyDocument(testDocuments[i].getAbsolutePath());
-				
+				exportFileBuffer.write(line.toString());
+				if (i != (testDocuments.length - 1))
+				{
+					exportFileBuffer.newLine();
+				}
+				exportFileBuffer.flush();
 			}
-			
+			exportFileBuffer.close();
+			scanner.close();
 		}
 		catch (IOException e)
 		{
