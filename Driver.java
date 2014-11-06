@@ -27,14 +27,14 @@ public class Driver
 		testChecker.exportModelToTextFile("./dataset/model.txt");
 		System.out.println("Done");
 		
-		File testDocumentsFolder = new File("./test_documents");
+		File testDocumentsFolder = new File("./testdata/test_documents");
 		File[] testDocuments = testDocumentsFolder.listFiles();
 		System.out.print("Files in test_documents folder: ");
 		System.out.print(testDocuments.length);
 		
 		try
 		{
-			File exportFile = new File("./test_documents/result.txt");
+			File exportFile = new File("./testdata/result.txt");
 			if (!exportFile.exists())
 			{
 				exportFile.createNewFile();
