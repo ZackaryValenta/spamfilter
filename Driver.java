@@ -81,7 +81,11 @@ public class Driver
 		}
 		System.out.println("Done");
 		
-		
+		int correctClassifications = 0;
+		int correctHam = 0;
+		int incorrectHam = 0;
+		int correctSpam = 0;
+		int incorrectSpam = 0;
 		try
 		{
 			Scanner scanner = new Scanner(new BufferedReader(new FileReader("./testdata/result.txt")));
@@ -110,6 +114,8 @@ public class Driver
 						line.append("ham");
 						line.append("   ");
 						line.append("correct");
+						correctClassifications++;
+						correctHam++;
 					}
 					//if string contains spam and therefore we classified it incorrectly as spam
 					else
@@ -119,6 +125,7 @@ public class Driver
 						line.append("ham");
 						line.append("   ");
 						line.append("incorrect");
+						incorrectHam++;
 					}
 				}
 				//if the filename starts with SPAM
@@ -132,6 +139,8 @@ public class Driver
 						line.append("spam");
 						line.append("   ");
 						line.append("correct");
+						correctClassifications++;
+						correctSpam++;
 					}
 					//if string contains ham and therefore we classified it correctly as ham
 					else
@@ -141,6 +150,7 @@ public class Driver
 						line.append("spam");
 						line.append("   ");
 						line.append("incorrect");
+						incorrectSpam++;
 					}
 				}
 				exportFileBuffer.write(line.toString());
@@ -157,5 +167,14 @@ public class Driver
 		{
 			e.printStackTrace();
 		}
+		int testDocumentsLength = testDocuments.length;
+		double accuracy = ((double)correctClassifications/testDocumentsLength * 100.0);
+		System.out.print("\nNumber of correct classifications: " + correctClassifications + "\n");
+		System.out.printf("Accuracy: %.2f%%", accuracy);
+		System.out.println();
+		System.out.print("Confusion Matrix: \n\n"
+				+ "       ham         spam        \n"
+				+ "ham    " + correctHam + "         " + incorrectHam + "\n"
+				+ "spam   " + incorrectSpam + "          " + correctSpam);
 	}
 }
