@@ -1,9 +1,11 @@
 package spamfilter;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Driver
 {
@@ -22,10 +24,10 @@ public class Driver
 		// create a test SpamChecker object and export its model to "model.txt"
 		System.out.print("\nCreating SpamChecker using documents in \"dataset/ham\" and \"dataset/spam\" folders...");
 		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
-		System.out.println("Done\n");	
-		System.out.print("Exporting spam checker's vocabulary to \"dataset/datasetWords.txt\"...");
+		System.out.println(" Done\n");	
+		System.out.print("Exporting spam checker's vocabulary to \"dataset/model.txt\"...");
 		testChecker.exportModelToTextFile("./dataset/model.txt");
-		System.out.println("Done");
+		System.out.println(" Done");
 		
 		File testDocumentsFolder = new File("./testdata/test_documents");
 		File[] testDocuments = testDocumentsFolder.listFiles();
@@ -70,6 +72,40 @@ public class Driver
 				exportFileBuffer.flush();
 			}
 			exportFileBuffer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		try
+		{
+			Scanner scanner = new Scanner("./testdata/result.txt");
+			File exportFile = new File("./testdata/analysis.txt");
+			if (!exportFile.exists())
+			{
+				exportFile.createNewFile();
+			}
+			for (int i = 0; i < testDocuments.length; i++)
+			{
+				StringBuilder line = new StringBuilder();
+				line.append(i + 1);
+				line.append("   ");
+				line.append(testDocuments[i].getName());
+				line.append("   ");
+				if (scanner.nextLine().contains("HAM"))
+				{
+					line.append("ham");
+				}
+				else
+				{
+					line.append("spam");
+				}
+				line.append("   ");
+				ClassifiedDocument classifiedDocument = testChecker.classifyDocument(testDocuments[i].getAbsolutePath());
+				
+			}
+			
 		}
 		catch (IOException e)
 		{
