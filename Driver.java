@@ -32,7 +32,7 @@ public class Driver
 		File[] testDocuments = testDocumentsFolder.listFiles();
 		System.out.print("\nFiles in testdata/test_documents folder: ");
 		System.out.println(testDocuments.length);
-		System.out.print("\nClassifying every document in testdata/test_documents folder and\nwritting results to \"testdata/results.txt\"...");
+		System.out.print("\nClassifying every document in testdata/test_documents folder and\nwriting results to \"testdata/results.txt\"...");
 		try
 		{
 			File exportFile = new File("./testdata/result.txt");
