@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ClassifiedDocument
 {
-	FilteredDocument document;
-	String documentName;
-	Double hamProbability;
-	Double spamProbability;
+	private FilteredDocument document;
+	private String documentName;
+	private Double hamProbability;
+	private Double spamProbability;
 
 	public ClassifiedDocument(String documentPath, HashMap<String, QuantifiedWord> vocabularyFilePath, Double hamProbability, Double spamProbability)
 	{
