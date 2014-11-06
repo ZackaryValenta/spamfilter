@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Driver
 {
@@ -77,5 +78,40 @@ public class Driver
 			e.printStackTrace();
 		}
 		System.out.println("Done");
+		
+		
+		try
+		{
+			Scanner scanner = new Scanner("./testdata/result.txt");
+			File exportFile = new File("./testdata/analysis.txt");
+			if (!exportFile.exists())
+			{
+				exportFile.createNewFile();
+			}
+			for (int i = 0; i < testDocuments.length; i++)
+			{
+				StringBuilder line = new StringBuilder();
+				line.append(i + 1);
+				line.append("   ");
+				line.append(testDocuments[i].getName());
+				line.append("   ");
+				if (scanner.nextLine().contains("HAM"))
+				{
+					line.append("ham");
+				}
+				else
+				{
+					line.append("spam");
+				}
+				line.append("   ");
+				ClassifiedDocument classifiedDocument = testChecker.classifyDocument(testDocuments[i].getAbsolutePath());
+				
+			}
+			
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
