@@ -84,7 +84,6 @@ public class Driver
 		
 		// measure the accuracy of the SpamChecker and display the results, including correct classification counts,
 		// accuracy, and confusion matrix
-		int correctClassifications = 0;
 		int correctHam             = 0;
 		int incorrectHam           = 0;
 		int correctSpam            = 0;
@@ -117,7 +116,6 @@ public class Driver
 						line.append("ham");
 						line.append("   ");
 						line.append("correct");
-						correctClassifications++;
 						correctHam++;
 					}
 					//if string contains spam and therefore we classified it incorrectly as spam
@@ -142,7 +140,6 @@ public class Driver
 						line.append("spam");
 						line.append("   ");
 						line.append("correct");
-						correctClassifications++;
 						correctSpam++;
 					}
 					//if string contains ham and therefore we classified it correctly as ham
@@ -172,8 +169,8 @@ public class Driver
 		}
 		int testDocumentsLength = testDocuments.length;
 		System.out.print("\nNumber of documents classified: " + testDocumentsLength + "\n");
-		System.out.print("\nNumber of correct classifications: " + correctClassifications + "\n");
-		double accuracy = ((double)correctClassifications/testDocumentsLength * 100.0);
+		System.out.print("\nNumber of correct classifications: " + (correctHam + correctSpam) + "\n");
+		double accuracy = ((double)(correctHam + correctSpam)/testDocumentsLength * 100.0);
 		System.out.printf("Accuracy: %.2f%%", accuracy);
 		System.out.println();
 		System.out.print("Confusion Matrix: \n\n"
