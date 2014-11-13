@@ -3,10 +3,12 @@ package spamfilter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,31 +17,37 @@ import java.util.TreeSet;
 
 public class SpamChecker
 {
+	private static final int MIN_WORD_LENGTH = 4;
+	private static final int MAX_WORD_LENGTH = 28;			// 28 is the size of the longest non-coined and nontechnical word
 	private static final double SMOOTHING_FACTOR = 0.5;
 	private String hamDatasetPath;
 	private String spamDatasetPath;
+	private String stopWordsPath;
 	private HashSet<FilteredDocument> hamDocuments;
 	private HashSet<FilteredDocument> spamDocuments;
 	private int hamWordCount;
 	private int spamWordCount;
 	private double hamProbability;
 	private double spamProbability;
+	private HashSet<String> stopWords;
 	private HashMap<String, QuantifiedWord> vocabulary;
 
 	// constructor that takes a path to a folder of known ham files and a path to a folder of known spam files and
 	// creates a vocabulary from all the words found
-	public SpamChecker(String hamDatasetPath, String spamDatasetPath)
+	public SpamChecker(String hamDatasetPath, String spamDatasetPath, String stopWordsPath)
 	{
 		this.hamDatasetPath  = hamDatasetPath;
 		this.spamDatasetPath = spamDatasetPath;
+		this.stopWordsPath   = stopWordsPath;
 		this.hamDocuments    = filterDocuments(hamDatasetPath);
 		this.spamDocuments   = filterDocuments(spamDatasetPath);
 		this.hamProbability  = (double)hamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
 		this.spamProbability = (double)spamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
+		this.stopWords       = parseStopWords(stopWordsPath);
 		this.vocabulary      = this.createVocabulary();
 		computeConditionalProbabilities();
 	}
-	
+
 	// constructor that takes the path to a text file of a SpamChecker model and initializes the attributes
 	public SpamChecker(String modelPath)
 	{
@@ -54,6 +62,11 @@ public class SpamChecker
 	public String getSpamDatasetPath()
 	{
 		return spamDatasetPath;
+	}
+
+	public String getStopWordsPath()
+	{
+		return stopWordsPath;
 	}
 
 	public int getHamWordCount()
@@ -154,60 +167,94 @@ public class SpamChecker
 		return returnSet;
 	}
 	
+	// parse specified file and returns a HashSet containing its lines
+	private HashSet<String> parseStopWords(String filePath)
+	{
+		HashSet<String> returnSet = new HashSet<String>();
+		if ((new File(filePath)).exists())
+		{
+			try
+			{
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+				String currentLine;
+				while((currentLine = bufferedReader.readLine()) != null)
+				{
+					currentLine = currentLine.trim();
+					returnSet.add(currentLine.toLowerCase());
+				}
+				bufferedReader.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return returnSet;
+	}
+	
 	// preconditions:- hamDocuments and spamDocuments must be populated with the file information from
 	//                 the hamDatasetPath and spamDatasetPath folder files
 	private HashMap<String, QuantifiedWord> createVocabulary()
 	{
+		HashMap<String, QuantifiedWord> returnMap = new HashMap<String, QuantifiedWord>();
 		this.hamWordCount  = 0;
 		this.spamWordCount = 0;
 		// create a QuantifiedWord for each unique word found in the ham documents, incrementing words that are repeated
-		// also increment hamWordCount
-		HashMap<String, QuantifiedWord> returnMap = new HashMap<String, QuantifiedWord>();
+		// while also incrementing hamWordCount
 		for (FilteredDocument currentDocument : this.hamDocuments)
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
 				currentWord = currentWord.toLowerCase();
-				if (returnMap.containsKey(currentWord))
+				if (isAcceptableWord(currentWord))
 				{
-					returnMap.get(currentWord).incrementHam();
+					if (returnMap.containsKey(currentWord))
+					{
+						returnMap.get(currentWord).incrementHam();
+					}
+					else
+					{
+						QuantifiedWord currentQuantifiedWord = new QuantifiedWord(currentWord);
+						currentQuantifiedWord.incrementHam();
+						returnMap.put(currentWord, currentQuantifiedWord);
+					}
+					++this.hamWordCount;
 				}
-				else
-				{
-					QuantifiedWord currentQuantifiedWord = new QuantifiedWord(currentWord);
-					currentQuantifiedWord.incrementHam();
-					returnMap.put(currentWord, currentQuantifiedWord);
-				}
-				++this.hamWordCount;
 			}
 		}
 		// create a QuantifiedWord for each unique word found in the spam documents, incrementing words that are repeated
-		// also increment spamWordCount
+		// while also incrementing spamWordCount
 		for (FilteredDocument currentDocument : this.spamDocuments)
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
 				currentWord = currentWord.toLowerCase();
-				if (returnMap.containsKey(currentWord))
+				if (isAcceptableWord(currentWord))
 				{
-					returnMap.get(currentWord).incrementSpam();
+					if (returnMap.containsKey(currentWord))
+					{
+						returnMap.get(currentWord).incrementSpam();
+					}
+					else
+					{
+						QuantifiedWord currentQuantifiedWord = new QuantifiedWord(currentWord);
+						currentQuantifiedWord.incrementSpam();
+						returnMap.put(currentWord, currentQuantifiedWord);
+					}
+					++this.spamWordCount;
 				}
-				else
-				{
-					QuantifiedWord currentQuantifiedWord = new QuantifiedWord(currentWord);
-					currentQuantifiedWord.incrementSpam();
-					returnMap.put(currentWord, currentQuantifiedWord);
-				}
-				++this.spamWordCount;
 			}
 		}
-		// remove any returnTree entry with a word that appears 0 or 1 times in either class of document (spam/ham)
+		// remove any returnTree entry with a word that appears 0 or 1 times in either class of document (spam/ham) and
+		// decrement their appearance in the ham and spam word counts
 		ArrayList<String> removalKeys = new ArrayList<String>();
 		for (Entry<String, QuantifiedWord> currentWord : returnMap.entrySet())
 		{
 			if (currentWord.getValue().getHamFrequency() < 2 && currentWord.getValue().getSpamFrequency() < 2)
 			{
 				removalKeys.add(currentWord.getKey());
+				this.hamWordCount  -= currentWord.getValue().getHamFrequency();
+				this.spamWordCount -= currentWord.getValue().getSpamFrequency();
 			}
 		}
 		for (String currentKey : removalKeys)
@@ -215,6 +262,53 @@ public class SpamChecker
 			returnMap.remove(currentKey);
 		}
 		return returnMap;
+	}
+
+	// this method controls the assumptions used when accepting or rejecting words to be used in the vocabulary
+	private boolean isAcceptableWord(String word)
+	{
+		return isAcceptableLength(word, MIN_WORD_LENGTH, MAX_WORD_LENGTH) &&
+				hasWordCharactersOnly(word) &&
+				!isCharacterRepetition(word) &&
+				!this.stopWords.contains(word);
+	}
+
+	// checks if every character in a word is the same
+	private static boolean isCharacterRepetition(String word)
+	{
+		for (int i = 1; i < word.length(); ++i)
+		{
+			if (word.charAt(i) != word.charAt(i - 1))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// checks if the specified word has desirable traits
+	private static boolean isAcceptableLength(String word, int minLength, int maxLength)
+	{
+		return word.length() >= minLength && word.length() <= maxLength;
+	}
+
+	// checks every character in the string and returns false if one is not a letter or a hyphen ('-')
+	private static boolean hasWordCharactersOnly(String word)
+	{
+		for (int i = 0; i < word.length(); ++i)
+		{
+			if (!isAlphabeticCharacter(word.charAt(i)) && word.charAt(i) != '-')
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// checks if a specified character is an uppercase or lowercase letter
+	public static boolean isAlphabeticCharacter(char character)
+	{
+		return (character >= 65 && character <= 90) || (character >= 97 && character <= 122);
 	}
 
 	private void computeConditionalProbabilities()

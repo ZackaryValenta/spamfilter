@@ -134,18 +134,12 @@ public class FilteredDocument
 		for (String currentWord : documentContents.split("\\s+"))
 		{
 			currentWord = trimEnds(currentWord);
-			if (currentWord != "" && isDesirableWord(currentWord))
+			if (currentWord != "")
 			{
 				returnSet.add(currentWord);
 			}
 		}
 		return returnSet;
-	}
-
-	// checks if the specified word has desirable traits
-	private static boolean isDesirableWord(String word)
-	{
-		return hasWordCharactersOnly(word) && (word.length() > 3);
 	}
 
 	// remove any non uppercase or lowercase letter characters from the end of the specified string
@@ -154,13 +148,13 @@ public class FilteredDocument
 	{
 		// find the beginning of a word
 		int i = 0;
-		while (i < word.length() && !isAlphabeticCharacter(word.charAt(i)))
+		while (i < word.length() && !SpamChecker.isAlphabeticCharacter(word.charAt(i)))
 		{
 			++i;
 		}
 		// find the end of the word
 		int j = word.length()- 1;
-		while (j >= 0 && !isAlphabeticCharacter(word.charAt(j)))
+		while (j >= 0 && !SpamChecker.isAlphabeticCharacter(word.charAt(j)))
 		{
 			--j;
 		}
@@ -175,24 +169,5 @@ public class FilteredDocument
 			return "";
 		}
 		return word.substring(i, j + 1);
-	}
-
-	// checks if a specified character is an uppercase or lowercase letter
-	private static boolean isAlphabeticCharacter(char character)
-	{
-		return (character >= 65 && character <= 90) || (character >= 97 && character <= 122);
-	}
-
-	// checks every character in the string and returns false if one is not a letter or a hyphen ('-')
-	private static boolean hasWordCharactersOnly(String word)
-	{
-		for (int i = 0; i < word.length(); ++i)
-		{
-			if (!isAlphabeticCharacter(word.charAt(i)) && word.charAt(i) != '-')
-			{
-				return false;
-			}
-		}
-		return true;
 	}
 }
