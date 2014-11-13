@@ -12,9 +12,11 @@ public class Driver
 {
 	public static void main(String[] args)
 	{
+		final String TEST_HAM_DATASET  = "./dataset/ham";
+		final String TEST_SPAM_DATASET = "./dataset/spam";
 		// display the number of files in the Ham and Span folders
-		File hamFolder = new File("./dataset/ham");
-		File spamFolder = new File("./dataset/spam");
+		File hamFolder = new File(TEST_HAM_DATASET);
+		File spamFolder = new File(TEST_SPAM_DATASET);
 		File[] hamFiles = hamFolder.listFiles();
 		File[] spamFiles = spamFolder.listFiles();
 		System.out.print("Files in ham dataset: ");
@@ -24,7 +26,7 @@ public class Driver
 
 		// create a test SpamChecker object and export its model to "model.txt"
 		System.out.print("\nCreating SpamChecker using documents in \"dataset/ham\" and\n\"dataset/spam\" folders...");
-		SpamChecker testChecker = new SpamChecker("./dataset/ham", "./dataset/spam");
+		SpamChecker testChecker = new SpamChecker(TEST_HAM_DATASET, TEST_SPAM_DATASET);
 		System.out.println(" Done\n");
 		
 		System.out.print("Exporting spam checker's vocabulary to \"dataset/model.txt\"...");
