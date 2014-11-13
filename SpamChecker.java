@@ -3,10 +3,12 @@ package spamfilter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,28 +22,32 @@ public class SpamChecker
 	private static final double SMOOTHING_FACTOR = 0.5;
 	private String hamDatasetPath;
 	private String spamDatasetPath;
+	private String stopWordsPath;
 	private HashSet<FilteredDocument> hamDocuments;
 	private HashSet<FilteredDocument> spamDocuments;
 	private int hamWordCount;
 	private int spamWordCount;
 	private double hamProbability;
 	private double spamProbability;
+	private HashSet<String> stopWords;
 	private HashMap<String, QuantifiedWord> vocabulary;
 
 	// constructor that takes a path to a folder of known ham files and a path to a folder of known spam files and
 	// creates a vocabulary from all the words found
-	public SpamChecker(String hamDatasetPath, String spamDatasetPath)
+	public SpamChecker(String hamDatasetPath, String spamDatasetPath, String stopWordsPath)
 	{
 		this.hamDatasetPath  = hamDatasetPath;
 		this.spamDatasetPath = spamDatasetPath;
+		this.stopWordsPath   = stopWordsPath;
 		this.hamDocuments    = filterDocuments(hamDatasetPath);
 		this.spamDocuments   = filterDocuments(spamDatasetPath);
 		this.hamProbability  = (double)hamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
 		this.spamProbability = (double)spamDocuments.size() / (hamDocuments.size() + spamDocuments.size());
+		this.stopWords       = parseStopWords(stopWordsPath);
 		this.vocabulary      = this.createVocabulary();
 		computeConditionalProbabilities();
 	}
-	
+
 	// constructor that takes the path to a text file of a SpamChecker model and initializes the attributes
 	public SpamChecker(String modelPath)
 	{
@@ -56,6 +62,11 @@ public class SpamChecker
 	public String getSpamDatasetPath()
 	{
 		return spamDatasetPath;
+	}
+
+	public String getStopWordsPath()
+	{
+		return stopWordsPath;
 	}
 
 	public int getHamWordCount()
@@ -156,6 +167,31 @@ public class SpamChecker
 		return returnSet;
 	}
 	
+	// parse specified file and returns a HashSet containing its lines
+	private HashSet<String> parseStopWords(String filePath)
+	{
+		HashSet<String> returnSet = new HashSet<String>();
+		if ((new File(filePath)).exists())
+		{
+			try
+			{
+				BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
+				String currentLine;
+				while((currentLine = bufferedReader.readLine()) != null)
+				{
+					currentLine = currentLine.trim();
+					returnSet.add(currentLine.toLowerCase());
+				}
+				bufferedReader.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return returnSet;
+	}
+	
 	// preconditions:- hamDocuments and spamDocuments must be populated with the file information from
 	//                 the hamDatasetPath and spamDatasetPath folder files
 	private HashMap<String, QuantifiedWord> createVocabulary()
@@ -169,9 +205,9 @@ public class SpamChecker
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
+				currentWord = currentWord.toLowerCase();
 				if (isAcceptableWord(currentWord))
 				{
-					currentWord = currentWord.toLowerCase();
 					if (returnMap.containsKey(currentWord))
 					{
 						returnMap.get(currentWord).incrementHam();
@@ -192,9 +228,9 @@ public class SpamChecker
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
+				currentWord = currentWord.toLowerCase();
 				if (isAcceptableWord(currentWord))
 				{
-					currentWord = currentWord.toLowerCase();
 					if (returnMap.containsKey(currentWord))
 					{
 						returnMap.get(currentWord).incrementSpam();
@@ -209,13 +245,16 @@ public class SpamChecker
 				}
 			}
 		}
-		// remove any returnTree entry with a word that appears 0 or 1 times in either class of document (spam/ham)
+		// remove any returnTree entry with a word that appears 0 or 1 times in either class of document (spam/ham) and
+		// decrement their appearance in the ham and spam word counts
 		ArrayList<String> removalKeys = new ArrayList<String>();
 		for (Entry<String, QuantifiedWord> currentWord : returnMap.entrySet())
 		{
 			if (currentWord.getValue().getHamFrequency() < 2 && currentWord.getValue().getSpamFrequency() < 2)
 			{
 				removalKeys.add(currentWord.getKey());
+				this.hamWordCount  -= currentWord.getValue().getHamFrequency();
+				this.spamWordCount -= currentWord.getValue().getSpamFrequency();
 			}
 		}
 		for (String currentKey : removalKeys)
@@ -226,11 +265,12 @@ public class SpamChecker
 	}
 
 	// this method controls the assumptions used when accepting or rejecting words to be used in the vocabulary
-	private static boolean isAcceptableWord(String word)
+	private boolean isAcceptableWord(String word)
 	{
 		return isAcceptableLength(word, MIN_WORD_LENGTH, MAX_WORD_LENGTH) &&
 				hasWordCharactersOnly(word) &&
-				!isCharacterRepetition(word);
+				!isCharacterRepetition(word) &&
+				!this.stopWords.contains(word);
 	}
 
 	// checks if every character in a word is the same

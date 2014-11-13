@@ -12,8 +12,11 @@ public class Driver
 {
 	public static void main(String[] args)
 	{
-		final String TEST_HAM_DATASET  = "./dataset/ham";
-		final String TEST_SPAM_DATASET = "./dataset/spam";
+		final String TEST_HAM_DATASET      = "./dataset1000/ham";
+		final String TEST_SPAM_DATASET     = "./dataset1000/spam";
+		final String MODEL_EXPORT_LOCATION = "./dataset1000/model.txt";
+		final String IGNORE_WORDS_FILE     = "./dataset1000/stopwords.txt";
+		
 		// display the number of files in the Ham and Span folders
 		File hamFolder = new File(TEST_HAM_DATASET);
 		File spamFolder = new File(TEST_SPAM_DATASET);
@@ -25,12 +28,13 @@ public class Driver
 		System.out.println(spamFiles.length);
 
 		// create a test SpamChecker object and export its model to "model.txt"
-		System.out.print("\nCreating SpamChecker using documents in \"dataset/ham\" and\n\"dataset/spam\" folders...");
-		SpamChecker testChecker = new SpamChecker(TEST_HAM_DATASET, TEST_SPAM_DATASET);
+		System.out.print("\nCreating SpamChecker using documents in " + TEST_HAM_DATASET + " and\n"
+				+ TEST_SPAM_DATASET + " folders and ignore-words in " + IGNORE_WORDS_FILE + "...");
+		SpamChecker testChecker = new SpamChecker(TEST_HAM_DATASET, TEST_SPAM_DATASET, IGNORE_WORDS_FILE);
 		System.out.println(" Done\n");
 		
-		System.out.print("Exporting spam checker's vocabulary to \"dataset/model.txt\"...");
-		testChecker.exportModelToTextFile("./dataset/model.txt");
+		System.out.print("Exporting spam checker's vocabulary to " + MODEL_EXPORT_LOCATION + "...");
+		testChecker.exportModelToTextFile(MODEL_EXPORT_LOCATION);
 		System.out.println(" Done");
 		
 		// use SpamChecker object to classify every document in testdata/test_document
