@@ -20,6 +20,8 @@ public class SpamChecker
 	private static final int MIN_WORD_LENGTH = 4;
 	private static final int MAX_WORD_LENGTH = 28;			// 28 is the size of the longest non-coined and nontechnical word
 	private static final double SMOOTHING_FACTOR = 0.5;
+	private static final boolean UPPER_LOWER_CASE_FOLDING = true;
+	private static final boolean USE_STOPWORDS = true;
 	private String hamDatasetPath;
 	private String spamDatasetPath;
 	private String stopWordsPath;
@@ -151,7 +153,7 @@ public class SpamChecker
 	// creates a classified document using dataset information
 	public ClassifiedDocument classifyDocument(String documentPath)
 	{
-		return new ClassifiedDocument(documentPath, vocabulary, hamProbability, spamProbability);
+		return new ClassifiedDocument(documentPath, vocabulary, UPPER_LOWER_CASE_FOLDING, hamProbability, spamProbability);
 	}
 
 	// loop through files in specified folder and create a FilteredDocument for each
@@ -180,7 +182,8 @@ public class SpamChecker
 				while((currentLine = bufferedReader.readLine()) != null)
 				{
 					currentLine = currentLine.trim();
-					returnSet.add(currentLine.toLowerCase());
+					currentLine = UPPER_LOWER_CASE_FOLDING ? currentLine.toLowerCase() : currentLine;
+					returnSet.add(currentLine);
 				}
 				bufferedReader.close();
 			}
@@ -205,7 +208,7 @@ public class SpamChecker
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
-				currentWord = currentWord.toLowerCase();
+				currentWord = UPPER_LOWER_CASE_FOLDING ? currentWord.toLowerCase() : currentWord;
 				if (isAcceptableWord(currentWord))
 				{
 					if (returnMap.containsKey(currentWord))
@@ -228,7 +231,7 @@ public class SpamChecker
 		{
 			for (String currentWord : currentDocument.getFilteredWords())
 			{
-				currentWord = currentWord.toLowerCase();
+				currentWord = UPPER_LOWER_CASE_FOLDING ? currentWord.toLowerCase() : currentWord;
 				if (isAcceptableWord(currentWord))
 				{
 					if (returnMap.containsKey(currentWord))
@@ -270,7 +273,7 @@ public class SpamChecker
 		return isAcceptableLength(word, MIN_WORD_LENGTH, MAX_WORD_LENGTH) &&
 				hasWordCharactersOnly(word) &&
 				!isCharacterRepetition(word) &&
-				!this.stopWords.contains(word);
+				(USE_STOPWORDS ? !this.stopWords.contains(word) : true);
 	}
 
 	// checks if every character in a word is the same
@@ -286,7 +289,7 @@ public class SpamChecker
 		return true;
 	}
 
-	// checks if the specified word has desirable traits
+	// checks if the specified word is between the MIN and MAX lengths
 	private static boolean isAcceptableLength(String word, int minLength, int maxLength)
 	{
 		return word.length() >= minLength && word.length() <= maxLength;
