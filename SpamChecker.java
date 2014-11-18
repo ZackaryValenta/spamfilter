@@ -18,10 +18,11 @@ import java.util.TreeSet;
 public class SpamChecker
 {
 	private static final int MIN_WORD_LENGTH = 4;
-	private static final int MAX_WORD_LENGTH = 28;			// 28 is the size of the longest non-coined and nontechnical word
-	private static final double SMOOTHING_FACTOR = 0.5;
+	private static final int MAX_WORD_LENGTH = 28;			// 28 is the size of the longest non-coined and non-technical word
+	private static final double SMOOTHING_FACTOR = 0.1;
 	private static final boolean UPPER_LOWER_CASE_FOLDING = true;
 	private static final boolean USE_STOPWORDS = true;
+	private static final int MIN_FREQUENCY = 2;
 	private String hamDatasetPath;
 	private String spamDatasetPath;
 	private String stopWordsPath;
@@ -253,7 +254,7 @@ public class SpamChecker
 		ArrayList<String> removalKeys = new ArrayList<String>();
 		for (Entry<String, QuantifiedWord> currentWord : returnMap.entrySet())
 		{
-			if (currentWord.getValue().getHamFrequency() < 2 && currentWord.getValue().getSpamFrequency() < 2)
+			if (currentWord.getValue().getHamFrequency() < MIN_FREQUENCY && currentWord.getValue().getSpamFrequency() < MIN_FREQUENCY)
 			{
 				removalKeys.add(currentWord.getKey());
 				this.hamWordCount  -= currentWord.getValue().getHamFrequency();
