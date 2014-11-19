@@ -18,15 +18,12 @@ import java.util.TreeSet;
 public class SpamChecker
 {
 	private static final int MIN_WORD_LENGTH = 4;
-<<<<<<< HEAD
 	private static final int MAX_WORD_LENGTH = 22;			// 28 is the size of the longest non-coined and nontechnical word
-=======
-	private static final int MAX_WORD_LENGTH = 28;			// 28 is the size of the longest non-coined and non-technical word
->>>>>>> zack
 	private static final double SMOOTHING_FACTOR = 0.1;
 	private static final boolean UPPER_LOWER_CASE_FOLDING = true;
 	private static final boolean USE_STOPWORDS = true;
 	private static final int MIN_FREQUENCY = 2;
+	
 	private String hamDatasetPath;
 	private String spamDatasetPath;
 	private String stopWordsPath;
