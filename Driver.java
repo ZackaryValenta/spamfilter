@@ -15,7 +15,7 @@ public class Driver
 		final String TEST_HAM_DATASET      = "./dataset1000/ham";
 		final String TEST_SPAM_DATASET     = "./dataset1000/spam";
 		final String MODEL_EXPORT_LOCATION = "./dataset1000/model.txt";
-		final String IGNORE_WORDS_FILE     = "./dataset1000/stopwords.txt";
+		final String STOPWORDS_FILE        = "./dataset1000/stopwords.txt";
 		
 		// display the number of files in the Ham and Span folders
 		File hamFolder = new File(TEST_HAM_DATASET);
@@ -29,8 +29,8 @@ public class Driver
 
 		// create a test SpamChecker object and export its model to "model.txt"
 		System.out.print("\nCreating SpamChecker using documents in " + TEST_HAM_DATASET + " and\n"
-				+ TEST_SPAM_DATASET + " folders and ignore-words in " + IGNORE_WORDS_FILE + "...");
-		SpamChecker testChecker = new SpamChecker(TEST_HAM_DATASET, TEST_SPAM_DATASET, IGNORE_WORDS_FILE);
+				+ TEST_SPAM_DATASET + " folders and ignore-words in " + STOPWORDS_FILE + "...");
+		SpamChecker testChecker = new SpamChecker(TEST_HAM_DATASET, TEST_SPAM_DATASET, STOPWORDS_FILE);
 		System.out.println(" Done\n");
 		
 		System.out.print("Exporting spam checker's vocabulary to " + MODEL_EXPORT_LOCATION + "...");
@@ -90,10 +90,10 @@ public class Driver
 		
 		// measure the accuracy of the SpamChecker and display the results, including correct classification counts,
 		// accuracy, and confusion matrix
-		int correctHam             = 0;
-		int incorrectHam           = 0;
-		int correctSpam            = 0;
-		int incorrectSpam          = 0;
+		int correctHam    = 0;
+		int incorrectHam  = 0;
+		int correctSpam   = 0;
+		int incorrectSpam = 0;
 		try
 		{
 			Scanner scanner = new Scanner(new BufferedReader(new FileReader("./testdata/result.txt")));
