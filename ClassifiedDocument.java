@@ -12,11 +12,12 @@ public class ClassifiedDocument
 	private Double hamProbability;
 	private Double spamProbability;
 
-	public ClassifiedDocument(String documentPath, HashMap<String, QuantifiedWord> vocabularyFilePath, Double hamProbability, Double spamProbability)
+	public ClassifiedDocument(String documentPath, HashMap<String, QuantifiedWord> vocabulary,
+								boolean isUpperLowerCaseFolded, Double hamProbability, Double spamProbability)
 	{
 		this.document                     = new FilteredDocument(documentPath);
 		this.documentName                 = (new File(documentPath)).getName();
-		List<Double> hamSpamProbabilities = computeHamSpamProbabilities(vocabularyFilePath, hamProbability, spamProbability);
+		List<Double> hamSpamProbabilities = computeHamSpamProbabilities(vocabulary, isUpperLowerCaseFolded, hamProbability, spamProbability);
 		this.hamProbability               = hamSpamProbabilities.get(0);
 		this.spamProbability              = hamSpamProbabilities.get(1);
 	}
@@ -48,13 +49,15 @@ public class ClassifiedDocument
 
 	// the returned list has two elements. the first element is the probability that the document of this
 	// object is ham and the second is the probability that it is spam
-	private List<Double> computeHamSpamProbabilities(HashMap<String, QuantifiedWord> vocabulary, Double hamProbability, Double spamProbability)
+	private List<Double> computeHamSpamProbabilities(HashMap<String, QuantifiedWord> vocabulary, boolean isUpperLowerCaseFolded,
+														Double hamProbability, Double spamProbability)
 	{
 		List<Double> returnList        = new ArrayList<Double>();
 		Double documentHamProbability  = Math.log10(hamProbability);
 		Double documentSpamProbability = Math.log10(spamProbability);
 		for (String currentWord : this.document.getFilteredWords())
 		{
+			currentWord = isUpperLowerCaseFolded ? currentWord.toLowerCase() : currentWord;
 			if (vocabulary.containsKey(currentWord))
 			{
 				QuantifiedWord currentQuantifiedWord = vocabulary.get(currentWord);
