@@ -25,7 +25,6 @@ public class FilteredDocument
 		}
 	}
 
-	private static final boolean REMOVE_XML_TAGS = false;
 	private String absolutePath;
 	private String documentContents;
 	private ArrayList<String> filteredWords;
@@ -35,7 +34,7 @@ public class FilteredDocument
 		this.absolutePath     = absolutePath;
 		this.documentContents = fileContentsToString(absolutePath);
 		String tagsRemoved    = removeXMLTags(this.documentContents);
-		this.filteredWords    = getFilteredWords((REMOVE_XML_TAGS) ? tagsRemoved : this.documentContents);		// based on the REMOVE_XML_TAGS variable, a different verison of the document is passed here
+		this.filteredWords    = getFilteredWords(tagsRemoved);
 	}
 
 	public String getAbsolutePath()
